@@ -5,7 +5,7 @@ from app import app_dash
 import colorlover
 from apps.vis.shotchart import create_shotchart
 from nba_api.stats.endpoints import shotchartdetail
-import urllib3, socket
+import socket
 from urllib3.connection import HTTPConnection
     
 HTTPConnection.default_socket_options = ( 
@@ -270,7 +270,7 @@ def render_shotchart(player_name):
     teams_id = df_player['TEAM_ID'].unique()
     data = pd.DataFrame()
     for i in range(len(teams_id)):
-        shot_detail = shotchartdetail.ShotChartDetail(team_id=i,player_id=player_id ,context_measure_simple = 'FGA')
+        shot_detail = shotchartdetail.ShotChartDetail(team_id=i,player_id=player_id ,context_measure_simple = 'FGA',timeout=100)
         data = pd.concat([data,shot_detail.get_data_frames()[0]],ignore_index=True)
 
     shotchart = create_shotchart(data)
