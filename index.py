@@ -1,10 +1,12 @@
 from dash import dcc,html, Output,Input
+import dash_bootstrap_components as dbc
 from app import app_dash, app
 import apps
 
-
 children_pages = apps.children_pages
 app_dash.layout = html.Div([dcc.Location(id='url', refresh=True),
+                            dbc.Row(html.H1('Player Profiles 2022-2023'),justify='center'),
+                            html.Br(),
                             html.Div(id='page-content', style={"padding": "15px 20px 15px 20px"}),
                             ], style={"background-color": "white", 'height': '120%'}
                            )
