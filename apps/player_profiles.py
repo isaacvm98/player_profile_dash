@@ -115,11 +115,11 @@ def create_layout():
                       ])
     return layout
 
-xpps_layout = dbc.Row([dbc.Col([html.H3('Shotchart',style={'text-align':'center'}),
-                                            dcc.Graph(id='shotchart_fig',config=config_b)],sm=4),
+xpps_layout = dbc.Row([#dbc.Col([html.H3('Shotchart',style={'text-align':'center'}),
+#                                             dcc.Graph(id='shotchart_fig',config=config_b)],sm=4),
                             dbc.Col([html.H3('Expected Points',style={'text-align':'center'}),
                                      html.Br(),
-                                    html.Div(id='table_xpps')],sm=8),
+                                    html.Div(id='table_xpps')],sm=10),
                                     ])
 
 @app_dash.callback(Output("content", "children"), Input("tabs", "active_tab"))
@@ -254,20 +254,20 @@ def render_tendency_table(player_name):
     return tables
 
 
-@app_dash.callback( Output('shotchart_fig','figure'),
-                   Input('player','value'),
-                  )
+# @app_dash.callback( Output('shotchart_fig','figure'),
+#                    Input('player','value'),
+#                   )
 
-def render_shotchart(player_name):
-    df_player = df_names[df_names['PLAYER_NAME']==player_name]
-    player_id = df_player['PLAYER_ID'].iloc[0]
-    teams_id = df_player['TEAM_ID'].unique()
-    data = pd.DataFrame()
-    shot_detail = shotchartdetail.ShotChartDetail(team_id=teams_id,player_id=player_id ,context_measure_simple = 'FGA',timeout=100)
-    data = pd.concat([data,shot_detail.get_data_frames()[0]],ignore_index=True)
+# def render_shotchart(player_name):
+#     df_player = df_names[df_names['PLAYER_NAME']==player_name]
+#     player_id = df_player['PLAYER_ID'].iloc[0]
+#     teams_id = df_player['TEAM_ID'].unique()
+#     data = pd.DataFrame()
+#     shot_detail = shotchartdetail.ShotChartDetail(team_id=teams_id,player_id=player_id ,context_measure_simple = 'FGA',timeout=100)
+#     data = pd.concat([data,shot_detail.get_data_frames()[0]],ignore_index=True)
 
-    shotchart = create_shotchart(data)
-    return shotchart
+#     shotchart = create_shotchart(data)
+#     return shotchart
 
 @app_dash.callback( Output('table_xpps','children'),
                    Input('player','value'),
