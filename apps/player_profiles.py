@@ -5,14 +5,8 @@ from app import app_dash
 import colorlover
 from apps.vis.shotchart import create_shotchart
 from nba_api.stats.endpoints import shotchartdetail
-import socket
-from urllib3.connection import HTTPConnection
-    
-HTTPConnection.default_socket_options = ( 
-            HTTPConnection.default_socket_options + [
-            (socket.SOL_SOCKET, socket.SO_SNDBUF, 1000000), #1MB in byte
-            (socket.SOL_SOCKET, socket.SO_RCVBUF, 1000000)
-        ])
+
+
 boptions= ["zoom2d", "pan2d", "select2d", "lasso2d", "zoomIn2d", "zoomOut2d", "autoScale2d",
            "resetScale2d", "hoverClosestCartesian", "hoverCompareCartesian",
            "zoom3d", "pan3d", "resetCameraDefault3d", "resetCameraLastSave3d", "hoverClosest3d",
@@ -270,7 +264,7 @@ def render_shotchart(player_name):
     teams_id = df_player['TEAM_ID'].unique()
     data = pd.DataFrame()
     for i in range(len(teams_id)):
-        shot_detail = shotchartdetail.ShotChartDetail(team_id=i,player_id=player_id ,context_measure_simple = 'FGA',timeout=100)
+        shot_detail = shotchartdetail.ShotChartDetail(team_id=i,player_id=player_id ,context_measure_simple = 'FGA',timeout=60)
         data = pd.concat([data,shot_detail.get_data_frames()[0]],ignore_index=True)
 
     shotchart = create_shotchart(data)
