@@ -5,7 +5,14 @@ from app import app_dash
 import colorlover
 from apps.vis.shotchart import create_shotchart
 from nba_api.stats.endpoints import shotchartdetail
-
+import urllib3, socket
+from urllib3.connection import HTTPConnection
+    
+HTTPConnection.default_socket_options = ( 
+            HTTPConnection.default_socket_options + [
+            (socket.SOL_SOCKET, socket.SO_SNDBUF, 1000000), #1MB in byte
+            (socket.SOL_SOCKET, socket.SO_RCVBUF, 1000000)
+        ])
 boptions= ["zoom2d", "pan2d", "select2d", "lasso2d", "zoomIn2d", "zoomOut2d", "autoScale2d",
            "resetScale2d", "hoverClosestCartesian", "hoverCompareCartesian",
            "zoom3d", "pan3d", "resetCameraDefault3d", "resetCameraLastSave3d", "hoverClosest3d",
