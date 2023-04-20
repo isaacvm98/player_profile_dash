@@ -195,16 +195,16 @@ court_shapes.append(res_area_shape)
 
 def create_shotchart(data):
     missed_shot_trace=go.Scatter(
-    x=data[data["EVENT_TYPE"]=="Missed Shot"]["LOC_X"],
-    y=data[data["EVENT_TYPE"]=="Missed Shot"]["LOC_Y"],
+    x=data[data["event_type"]=="Missed Shot"]["loc_x"],
+    y=data[data["event_type"]=="Missed Shot"]["loc_y"],
     mode="markers",
     name="Miss",
     marker={"color":"red","size":5},
     hoverinfo='skip')
 
     made_shot_trace=go.Scatter(
-        x=data[data["EVENT_TYPE"]=="Made Shot"]["LOC_X"],
-        y=data[data["EVENT_TYPE"]=="Made Shot"]["LOC_Y"],
+        x=data[data["event_type"]=="Made Shot"]["loc_x"],
+        y=data[data["event_type"]=="Made Shot"]["loc_y"],
         mode="markers",
         name="Made",
         marker={"color":"green","size":5},

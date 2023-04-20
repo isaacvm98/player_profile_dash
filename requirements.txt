@@ -22,3 +22,5 @@ six==1.16.0
 tenacity==8.2.2
 tzdata==2023.3
 Werkzeug==2.2.3
+psycopg2
+python-dotenv
