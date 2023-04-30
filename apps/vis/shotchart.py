@@ -1,198 +1,170 @@
 import plotly.graph_objects as go
-court_shapes = []
+# ===================================
+# ===== SHOT VISUALISATION - V2 =====
+# ===================================
+# Draw a very simple shot chart
+def draw_plotly_court(fig, fig_width=600, margins=10):
 
-outer_lines_shape = dict(
-  type='rect',
-  xref='x',
-  yref='y',
-  x0='-250',
-  y0='-47.5',
-  x1='250',
-  y1='422.5',
-  line=dict(
-      color='rgba(10, 10, 10, 1)',
-      width=1
-  )
-)
+    import numpy as np
 
-court_shapes.append(outer_lines_shape)
+    # From: https://community.plot.ly/t/arc-shape-with-path/7205/5
+    def ellipse_arc(x_center=0.0, y_center=0.0, a=10.5, b=10.5, start_angle=0.0, end_angle=2 * np.pi, N=200, closed=False):
+        t = np.linspace(start_angle, end_angle, N)
+        x = x_center + a * np.cos(t)
+        y = y_center + b * np.sin(t)
+        path = f'M {x[0]}, {y[0]}'
+        for k in range(1, len(t)):
+            path += f'L{x[k]}, {y[k]}'
+        if closed:
+            path += ' Z'
+        return path
 
+    fig_height = fig_width * (470 + 2 * margins) / (500 + 2 * margins)
+    fig.update_layout(width=fig_width, height=fig_height)
 
-hoop_shape = dict(
-  type='circle',
-  xref='x',
-  yref='y',
-  x0='7.5',
-  y0='7.5',
-  x1='-7.5',
-  y1='-7.5',
-  line=dict(
-    color='rgba(10, 10, 10, 1)',
-    width=1
-  )
-)
+    # Set axes ranges
+    fig.update_xaxes(range=[-250 - margins, 250 + margins])
+    fig.update_yaxes(range=[-52.5 - margins, 417.5 + margins])
 
-court_shapes.append(hoop_shape)
+    threept_break_y = 89.47765084
+    three_line_col = "#777777"
+    main_line_col = "#777777"
 
-backboard_shape = dict(
-  type='rect',
-  xref='x',
-  yref='y',
-  x0='-30',
-  y0='-7.5',
-  x1='30',
-  y1='-6.5',
-  line=dict(
-    color='rgba(10, 10, 10, 1)',
-    width=1
-  ),
-  fillcolor='rgba(10, 10, 10, 1)'
-)
+    fig.update_layout(
+        # Line Horizontal
+        margin=dict(l=20, r=20, t=20, b=20),
+        paper_bgcolor="white",
+        plot_bgcolor="white",
+        yaxis=dict(
+            scaleanchor="x",
+            scaleratio=1,
+            showgrid=False,
+            zeroline=False,
+            showline=False,
+            ticks='',
+            showticklabels=False,
+            fixedrange=True,
+        ),
+        xaxis=dict(
+            showgrid=False,
+            zeroline=False,
+            showline=False,
+            ticks='',
+            showticklabels=False,
+            fixedrange=True,
+        ),
+        shapes=[
+            dict(
+                type="rect", x0=-250, y0=-52.5, x1=250, y1=417.5,
+                line=dict(color=main_line_col, width=1),
+                # fillcolor='#333333',
+                layer='below'
+            ),
+            dict(
+                type="rect", x0=-80, y0=-52.5, x1=80, y1=137.5,
+                line=dict(color=main_line_col, width=1),
+                # fillcolor='#333333',
+                layer='below'
+            ),
+            dict(
+                type="rect", x0=-60, y0=-52.5, x1=60, y1=137.5,
+                line=dict(color=main_line_col, width=1),
+                # fillcolor='#333333',
+                layer='below'
+            ),
+            dict(
+                type="circle", x0=-60, y0=77.5, x1=60, y1=197.5, xref="x", yref="y",
+                line=dict(color=main_line_col, width=1),
+                # fillcolor='#dddddd',
+                layer='below'
+            ),
+            dict(
+                type="line", x0=-60, y0=137.5, x1=60, y1=137.5,
+                line=dict(color=main_line_col, width=1),
+                layer='below'
+            ),
 
-court_shapes.append(backboard_shape)
+            dict(
+                type="rect", x0=-2, y0=-7.25, x1=2, y1=-12.5,
+                line=dict(color="#ec7607", width=1),
+                fillcolor='#ec7607',
+            ),
+            dict(
+                type="circle", x0=-7.5, y0=-7.5, x1=7.5, y1=7.5, xref="x", yref="y",
+                line=dict(color="#ec7607", width=1),
+            ),
+            dict(
+                type="line", x0=-30, y0=-12.5, x1=30, y1=-12.5,
+                line=dict(color="#ec7607", width=1),
+            ),
 
-outer_three_sec_shape = dict(
-  type='rect',
-  xref='x',
-  yref='y',
-  x0='-80',
-  y0='-47.5',
-  x1='80',
-  y1='143.5',
-  line=dict(
-      color='rgba(10, 10, 10, 1)',
-      width=1
-  )
-)
+            dict(type="path",
+                 path=ellipse_arc(a=40, b=40, start_angle=0, end_angle=np.pi),
+                 line=dict(color=main_line_col, width=1), layer='below'),
+            dict(type="path",
+                 path=ellipse_arc(a=237.5, b=237.5, start_angle=0.386283101, end_angle=np.pi - 0.386283101),
+                 line=dict(color=main_line_col, width=1), layer='below'),
+            dict(
+                type="line", x0=-220, y0=-52.5, x1=-220, y1=threept_break_y,
+                line=dict(color=three_line_col, width=1), layer='below'
+            ),
+            dict(
+                type="line", x0=-220, y0=-52.5, x1=-220, y1=threept_break_y,
+                line=dict(color=three_line_col, width=1), layer='below'
+            ),
+            dict(
+                type="line", x0=220, y0=-52.5, x1=220, y1=threept_break_y,
+                line=dict(color=three_line_col, width=1), layer='below'
+            ),
 
-court_shapes.append(outer_three_sec_shape)
+            dict(
+                type="line", x0=-250, y0=227.5, x1=-220, y1=227.5,
+                line=dict(color=main_line_col, width=1), layer='below'
+            ),
+            dict(
+                type="line", x0=250, y0=227.5, x1=220, y1=227.5,
+                line=dict(color=main_line_col, width=1), layer='below'
+            ),
+            dict(
+                type="line", x0=-90, y0=17.5, x1=-80, y1=17.5,
+                line=dict(color=main_line_col, width=1), layer='below'
+            ),
+            dict(
+                type="line", x0=-90, y0=27.5, x1=-80, y1=27.5,
+                line=dict(color=main_line_col, width=1), layer='below'
+            ),
+            dict(
+                type="line", x0=-90, y0=57.5, x1=-80, y1=57.5,
+                line=dict(color=main_line_col, width=1), layer='below'
+            ),
+            dict(
+                type="line", x0=-90, y0=87.5, x1=-80, y1=87.5,
+                line=dict(color=main_line_col, width=1), layer='below'
+            ),
+            dict(
+                type="line", x0=90, y0=17.5, x1=80, y1=17.5,
+                line=dict(color=main_line_col, width=1), layer='below'
+            ),
+            dict(
+                type="line", x0=90, y0=27.5, x1=80, y1=27.5,
+                line=dict(color=main_line_col, width=1), layer='below'
+            ),
+            dict(
+                type="line", x0=90, y0=57.5, x1=80, y1=57.5,
+                line=dict(color=main_line_col, width=1), layer='below'
+            ),
+            dict(
+                type="line", x0=90, y0=87.5, x1=80, y1=87.5,
+                line=dict(color=main_line_col, width=1), layer='below'
+            ),
 
-inner_three_sec_shape = dict(
-  type='rect',
-  xref='x',
-  yref='y',
-  x0='-60',
-  y0='-47.5',
-  x1='60',
-  y1='143.5',
-  line=dict(
-      color='rgba(10, 10, 10, 1)',
-      width=1
-  )
-)
+            dict(type="path",
+                 path=ellipse_arc(y_center=417.5, a=60, b=60, start_angle=-0, end_angle=-np.pi),
+                 line=dict(color=main_line_col, width=1), layer='below'),
 
-court_shapes.append(inner_three_sec_shape)
-
-left_line_shape = dict(
-  type='line',
-  xref='x',
-  yref='y',
-  x0='-220',
-  y0='-47.5',
-  x1='-220',
-  y1='92.5',
-  line=dict(
-      color='rgba(10, 10, 10, 1)',
-      width=1
-  )
-)
-
-court_shapes.append(left_line_shape)
-
-right_line_shape = dict(
-  type='line',
-  xref='x',
-  yref='y',
-  x0='220',
-  y0='-47.5',
-  x1='220',
-  y1='92.5',
-  line=dict(
-      color='rgba(10, 10, 10, 1)',
-      width=1
-  )
-)
-
-court_shapes.append(right_line_shape)
-
-three_point_arc_shape = dict(
-  type='path',
-  xref='x',
-  yref='y',
-  path='M -220 92.5 C -70 300, 70 300, 220 92.5',
-  line=dict(
-      color='rgba(10, 10, 10, 1)',
-      width=1
-  )
-)
-
-court_shapes.append(three_point_arc_shape)
-
-circulo = dict(
-  type='circle',
-  xref='x',
-  yref='y',
-  x0='60',
-  y0='482.5',
-  x1='-60',
-  y1='362.5',
-  line=dict(
-      color='rgba(10, 10, 10, 1)',
-      width=1
-  )
-)
-
-court_shapes.append(circulo)
-
-res_circle_shape = dict(
-  type='circle',
-  xref='x',
-  yref='y',
-  x0='20',
-  y0='442.5',
-  x1='-20',
-  y1='402.5',
-  line=dict(
-      color='rgba(10, 10, 10, 1)',
-      width=1
-  )
-)
-
-court_shapes.append(res_circle_shape)
-
-free_throw_circle_shape = dict(
-  type='circle',
-  xref='x',
-  yref='y',
-  x0='60',
-  y0='200',
-  x1='-60',
-  y1='80',
-  line=dict(
-      color='rgba(10, 10, 10, 1)',
-      width=1
-  )
-)
-
-court_shapes.append(free_throw_circle_shape)
-
-res_area_shape = dict(
-  type='circle',
-  xref='x',
-  yref='y',
-  x0='40',
-  y0='40',
-  x1='-40',
-  y1='-40',
-  line=dict(
-    color='rgba(10, 10, 10, 1)',
-    width=1,
-    dash='dot'
-  )
-)
-
-court_shapes.append(res_area_shape)
-
+        ]
+    )
+    return True
 def create_shotchart(data):
     missed_shot_trace=go.Scatter(
     x=data[data["event_type"]=="Missed Shot"]["loc_x"],
@@ -210,7 +182,6 @@ def create_shotchart(data):
         marker={"color":"green","size":5},
         hoverinfo='skip')
 
-    df=[missed_shot_trace,made_shot_trace]
     layout = go.Layout(
         showlegend=True,
         xaxis=dict(
@@ -225,12 +196,17 @@ def create_shotchart(data):
         ),
         height=600,
         width=650,
-        shapes=court_shapes,
+        #shapes=court_shapes,
         plot_bgcolor='rgba(0, 0, 0, 0)',
         paper_bgcolor='rgba(0, 0, 0, 0)',
         legend=dict(y=1.08, x=0.5, orientation='h', xanchor='center', yanchor='middle', itemsizing='constant'),
     )
-
-    shotchart = go.Figure(data=df, layout=layout)
+    shotchart = go.Figure(layout=layout)
+    draw_plotly_court(shotchart)
+    shotchart.add_trace(missed_shot_trace)
+    shotchart.add_trace(made_shot_trace)
+    #shotchart = go.Figure(data=df, layout=layout)
 
     return shotchart
+
+

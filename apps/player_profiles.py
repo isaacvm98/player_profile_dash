@@ -1,5 +1,5 @@
 import pandas as pd
-from dash import Output,Input, html, dcc, dash_table
+from dash import Output,Input, html, dcc, dash_table, State
 import dash_bootstrap_components as dbc
 from app import app_dash
 import colorlover
@@ -34,6 +34,7 @@ HEADER_STYLE = {'whiteSpace': 'normal',
                     'fontFamily':'Segoe UI'}
 
 CELL_STYLE = {'fontFamily':'Segoe UI'}
+
 
 years = ['2021-22','2022-23']
 df_names = pd.read_csv('./assets/players_teams.csv')
@@ -110,6 +111,13 @@ def create_layout():
         html.Div(id="content")])
 
 
+    footer = dbc.Row([
+                dbc.Col(html.Small('Created by Isaac Vergara', style={'font-size': '14px', 'font-weight': 'bold'}),sm=3),
+                dbc.Col(html.A(html.I(className="fab fa-github fa-2x"), href="https://github.com/isaacvm98", target="_blank"),sm=3),
+                dbc.Col(html.A(html.I(className="fab fa-twitter fa-2x"), href="https://twitter.com/ivm9816", target="_blank"),sm=3),
+                dbc.Col(html.A(html.I(className="fab fa-linkedin fa-2x"), href="https://linkedin.com/in/isaac-vergara-mercenario-4a9822185",
+                                target="_blank"),sm=3)
+                        ])
 
     layout = html.Div([
                     dbc.Row([html.H5('Select a player'),
@@ -120,16 +128,61 @@ def create_layout():
                     html.Hr(),
                     html.Div(id='header'),
                     html.Br(),
-                    tabs
-                      ])
+                    tabs,
+                    html.Hr(),
+                    footer
+                      ],style={'font-family': 'Arial'})
     return layout
 
-xpps_layout = dbc.Row([dbc.Col([html.H3('Shotchart',style={'text-align':'center'}),
-                                             dcc.Graph(id='shotchart_fig',config=config_b)],sm=4),
-                            dbc.Col([html.H3('Expected Points',style={'text-align':'center'}),
-                                     html.Br(),
-                                    html.Div(id='table_xpps')],sm=8),
-                                    ])
+import dash_bootstrap_components as dbc
+
+# Define the popover content
+popover_content = [dbc.PopoverHeader("Expected Points per Shot Model"),    dbc.PopoverBody('''The Expected Points Per Shot (XPPS) values shown 
+                                                                                            in the table are calculated using a XGBoost model 
+                                                                                            that takes into account the location of the shot,
+                                                                                            time remaining in the shot clock, touch time before the shot,
+                                                                                            the number of dribbles taken and
+                                                                                            the closest defender ''')]
+
+# Define the layout of your app
+xpps_layout = dbc.Row([
+    dbc.Col([
+        html.H3('Shotchart',style={'text-align':'center'}),
+        dcc.Graph(id='shotchart_fig',config=config_b)
+    ],sm=4),
+    dbc.Col([
+        dbc.Row([
+            dbc.Col([
+                html.H3('Expected Points', style={"textDecoration": "underline", "cursor": "pointer"}, id="expected-points-model"),
+                dbc.Popover(
+                    popover_content, 
+                    id="popover-target",
+                    is_open=False,
+                    target="expected-points-model",
+                    placement="bottom-start",
+                ),
+            ], 
+            width={"size": 6, "offset": 6},
+        ),
+        html.Br(),
+        html.Div(id='table_xpps', 
+                 style={'border': '1px solid lightgray', 'border-radius': '5px', 'padding': '10px'}
+        )
+    ])],sm=8)
+    ])
+
+
+
+# Define the callback to toggle the popover
+@app_dash.callback(
+    Output("popover-target", "is_open"),
+    [Input("expected-points-model", "n_clicks")],
+    [State("popover-target", "is_open")],
+)
+def toggle_popover(n, is_open):
+    if n:
+        return not is_open
+    return is_open
 
 @app_dash.callback(Output("content", "children"), Input("tabs", "active_tab"))
 def switch_tab(at):
@@ -253,7 +306,12 @@ def render_tendency_table(player_name):
             dbc.Row([
             html.H3('Points per Posession'),
             table_2
-            ])
+            ]),
+            html.Br(),
+            html.Footer(['Data thanks to: ',   
+                          html.A('Dominic Samangy', href='https://github.com/DomSamangy/NBA_Play_Types_16_23'),   
+                         ' (data collected from Second Spectrum)'])
+
         ])
     except:
         tables = html.Div([
