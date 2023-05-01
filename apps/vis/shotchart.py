@@ -166,21 +166,49 @@ def draw_plotly_court(fig, fig_width=600, margins=10):
     )
     return True
 def create_shotchart(data):
-    missed_shot_trace=go.Scatter(
-    x=data[data["event_type"]=="Missed Shot"]["loc_x"],
-    y=data[data["event_type"]=="Missed Shot"]["loc_y"],
-    mode="markers",
-    name="Miss",
-    marker={"color":"red","size":5},
-    hoverinfo='skip')
+    # filter the data for made shots
+    made_shots = data[data['event_type'] == 'Made Shot']
+    miss_shots = data[data['event_type'] == 'Missed Shot']
+    color_scale=[[0, "rgba(0, 0, 0, 0)"], 
+    [0.15, 'rgb(255, 204, 204)'],
+    [0.3, 'rgb(255, 153, 153)'],
+    [0.45, 'rgb(255, 102, 102)'],
+    [0.6, 'rgb(255, 51, 51)'],
+    [0.75, 'rgb(204, 0, 0)'],
+    [0.9, 'rgb(153, 0, 0)'],
+    [1, 'rgb(255, 255, 255)']
+    ]
 
-    made_shot_trace=go.Scatter(
-        x=data[data["event_type"]=="Made Shot"]["loc_x"],
-        y=data[data["event_type"]=="Made Shot"]["loc_y"],
-        mode="markers",
+    heatmap_made = go.Histogram2d(
+        x=made_shots['loc_x'],
+        y=made_shots['loc_y'],
+        autobinx=True,
+        autobiny=True,
+        nbinsx=30,
+        nbinsy=30,
+        colorscale=color_scale,
+        showscale=False,
+        opacity=.8,
+        zmax=1,
         name="Made",
-        marker={"color":"green","size":5},
-        hoverinfo='skip')
+        hoverinfo='skip',
+        showlegend=True,
+    )
+    heatmap_miss = go.Histogram2d(
+        x=miss_shots['loc_x'],
+        y=miss_shots['loc_y'],
+        autobinx=True,
+        autobiny=True,
+        nbinsx=30,
+        nbinsy=30,
+        colorscale=color_scale,
+        showscale=False,
+        opacity=.8,
+        zmax=1,
+        name="Missed",
+        hoverinfo='skip',
+        showlegend=True,
+    )
 
     layout = go.Layout(
         showlegend=True,
@@ -196,16 +224,15 @@ def create_shotchart(data):
         ),
         height=600,
         width=650,
-        #shapes=court_shapes,
         plot_bgcolor='rgba(0, 0, 0, 0)',
         paper_bgcolor='rgba(0, 0, 0, 0)',
-        legend=dict(y=1.08, x=0.5, orientation='h', xanchor='center', yanchor='middle', itemsizing='constant'),
+        legend=dict(y=1.08, x=0.5, orientation='h', xanchor='center', yanchor='middle', itemsizing='constant')
     )
+
     shotchart = go.Figure(layout=layout)
     draw_plotly_court(shotchart)
-    shotchart.add_trace(missed_shot_trace)
-    shotchart.add_trace(made_shot_trace)
-    #shotchart = go.Figure(data=df, layout=layout)
+    shotchart.add_trace(heatmap_made)
+    shotchart.add_trace(heatmap_miss)
 
     return shotchart
 
