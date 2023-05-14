@@ -33,8 +33,10 @@ HEADER_STYLE = {'whiteSpace': 'normal',
                     'backgroundColor': 'rgb(98, 100, 100, 1)',
                     'fontFamily':'Segoe UI'}
 
-CELL_STYLE = {'fontFamily':'Segoe UI'}
-
+CELL_STYLE = {'fontFamily':'Segoe UI',
+              'border': 'bottom',
+            'height': '60px',
+            'width': '80px'}
 
 years = ['2021-22','2022-23']
 df_names = pd.read_csv('./assets/players_teams.csv')
@@ -103,6 +105,7 @@ def create_layout():
             [
                 dbc.Tab(label="Player Tendencies", tab_id="tab-1"),
                 dbc.Tab(label="Expected Points", tab_id="tab-2"),
+                dbc.Tab(label="Matchups", tab_id="tab-3"),
             ],
             id="tabs",
             active_tab="tab-1",
@@ -170,7 +173,16 @@ xpps_layout = dbc.Row([
         )
     ])],sm=8)
     ])
-
+matchup_layout = html.Div([
+    dbc.Row([
+        html.H3('Matchups by team',style={'text-align':'center'}),
+        dcc.Dropdown(id='team_dropdown',value=1610612738)
+    ]),
+    html.Br(),
+    dbc.Row(id='table_matchups',
+                 style={'border': '1px solid lightgray', 'border-radius': '5px', 'padding': '10px'}   
+    )
+    ])
 
 
 # Define the callback to toggle the popover
@@ -187,9 +199,11 @@ def toggle_popover(n, is_open):
 @app_dash.callback(Output("content", "children"), Input("tabs", "active_tab"))
 def switch_tab(at):
     if at == "tab-1":
-        return dbc.Col(id='tendencies-tables',sm=10)
+        return html.Div(id='tendencies-tables')
     elif at == "tab-2":
         return xpps_layout
+    elif at == 'tab-3':
+        return matchup_layout
 
 @app_dash.callback(Output('tendencies-tables','children'),
                    Input('player','value'))
@@ -288,7 +302,7 @@ def render_tendency_table(player_name):
                 data=df_pivoted_2.to_dict('records'),
                 columns= columns_2,
                 style_data_conditional=styles_all_2,
-                                style_cell_conditional=[
+                style_cell_conditional=[
                         {
                             'if': {'column_id': 'Play Type'},
                             'textAlign': 'left'
@@ -301,18 +315,19 @@ def render_tendency_table(player_name):
             dbc.Row([
             html.H3('Frequency'),
             table
-            ]),
+            ],justify='center'),
+            html.Br(),
             html.Br(),
             dbc.Row([
             html.H3('Points per Posession'),
             table_2
-            ]),
+            ],justify='center'),
             html.Br(),
             html.Footer(['Data thanks to: ',   
                           html.A('Dominic Samangy', href='https://github.com/DomSamangy/NBA_Play_Types_16_23'),   
                          ' (data collected from Second Spectrum)'])
 
-        ])
+        ],style={'text-align':'center'})
     except:
         tables = html.Div([
             html.H3('No data available for selected player'),
@@ -390,3 +405,75 @@ def return_header(player_name):
     header = dbc.Row([html.H3(f'Player Profile for {player_name}'),
                      html.Img(src=f'https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png',style=style_img)])
     return header
+
+@app_dash.callback(Output('team_dropdown','options'),
+                   Input('player','value'))
+
+def team_ops(player_name):
+    df_player = df_names[df_names['PLAYER_NAME']==player_name]
+    player_id = df_player['PLAYER_ID'].iloc[0]
+    conn = psycopg2.connect(
+      database= DB,
+      user= USER_NAME, 
+      password= PASSWORD, 
+      port = PORT,
+      host = HOST 
+    )
+    curs = conn.cursor() 
+    sql1=f'''SELECT DISTINCT def_team_id 
+            FROM matchups 
+            WHERE off_player_id = {player_id}'''
+    curs.execute(sql1)
+    columns = curs.description
+    conn.commit()
+    columns = [columns[i][0] for i in range(len(columns))]
+    data = pd.DataFrame(curs.fetchall(),columns=columns)
+    conn.close()
+    data = data.merge(df_names[['TEAM_ABB','TEAM_ID']],left_on='def_team_id',right_on='TEAM_ID',how='left')
+    data.drop_duplicates(inplace=True)
+    teams_dropdown = [{'value':v,'label':k} for v,k in zip(data['TEAM_ID'],data['TEAM_ABB'])]
+    return teams_dropdown
+    
+@app_dash.callback(Output('table_matchups','children'),
+                    Input('player','value'),
+                   Input('team_dropdown','value')
+                  )
+
+def render_shotchart(player_name,team_id):
+    df_player = df_names[df_names['PLAYER_NAME']==player_name]
+    player_id = df_player['PLAYER_ID'].iloc[0]
+    conn = psycopg2.connect(
+      database= DB,
+      user= USER_NAME, 
+      password= PASSWORD, 
+      port = PORT,
+      host = HOST 
+    )
+    curs = conn.cursor() 
+    sql1=f'''SELECT def_player_id, partial_poss,matchup_points, points_per_poss 
+            FROM matchups 
+            WHERE off_player_id = {player_id} AND def_team_id = {int(team_id)}'''
+    curs.execute(sql1)
+    columns = curs.description
+    conn.commit()
+    columns = [columns[i][0] for i in range(len(columns))]
+    data = pd.DataFrame(curs.fetchall(),columns=columns)
+    conn.close()
+    rename_dict = {'def_player_id':'Player', 'partial_poss':'Possesions','matchup_points':'Points', 'points_per_poss':'Points Per Possession'}
+    data.rename(columns=rename_dict,inplace=True)
+    data['Player'] = data['Player'].map(dict(zip(df_names['PLAYER_ID'],df_names['PLAYER_NAME'])))
+    data.sort_values('Points Per Possession',ascending=False,inplace=True)
+    data['Points Per Possession'] = data['Points Per Possession'].round(2)
+    table = dash_table.DataTable(
+                data=data.to_dict('records'),
+                columns= [{"name": i, "id": i} for i in data.columns],
+                style_header= HEADER_STYLE,
+                style_data=CELL_STYLE,
+                style_cell_conditional=[
+                        {
+                            'if': {'column_id': 'Player'},
+                            'textAlign': 'left'
+                        }
+                    ],
+            )
+    return table
