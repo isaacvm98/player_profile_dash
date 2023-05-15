@@ -7,6 +7,7 @@ from apps.vis.shotchart import create_shotchart
 import psycopg2
 import os
 from dotenv import load_dotenv
+from nba_api.stats.endpoints import commonplayerinfo
 load_dotenv()
 
 DB = os.environ['database']
@@ -125,7 +126,7 @@ def create_layout():
     layout = html.Div([
                     dbc.Row([html.H5('Select a player'),
                              dcc.Dropdown(player_names,
-                                   value='James Harden',
+                                   value='LeBron James',
                                    id='player')],
                       justify='center'),
                     html.Hr(),
@@ -400,12 +401,79 @@ def return_header(player_name):
         'margin-left': 'auto',
         'margin-right': 'auto',
         'margin-top': '6rem'}
+    style_table = {'box-sizing':'border-box',
+        'border': '0 solid',
+        'border-style': 'solid',
+        'vertical-align':' middle',
+        'height': 'auto',
+        'display': 'in-line',
+        'width': '20%',
+        'margin-left': 'auto',
+        'margin-right': 'auto',
+        'margin-top': '6rem'}
     df_player = df[(df['PLAYER_NAME']==player_name)]
     player_id = df_player['PLAYER_ID'].iloc[0]
-    header = dbc.Row([html.H3(f'Player Profile for {player_name}'),
-                     html.Img(src=f'https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png',style=style_img)])
-    return header
+    info = commonplayerinfo.CommonPlayerInfo(player_id).get_data_frames()[0]
+    # Extract the player's information from the DataFrame
+    height = info['HEIGHT'].iloc[0]
+    weight = info['WEIGHT'].iloc[0]
+    season_exp = info['SEASON_EXP'].iloc[0]
+    jersey = info['JERSEY'].iloc[0]
+    position = info['POSITION'].iloc[0]
+    team_abbreviation = info['TEAM_ABBREVIATION'].iloc[0]
 
+    # Create the header component
+    image = html.Img(src=f'https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png', style=style_img)
+
+    # Create a table to display the player's information
+    info_table = html.Table([
+        html.Tr([html.Th('Height'), html.Td(height)]),
+        html.Tr([html.Th('Weight'), html.Td(weight)]),
+        html.Tr([html.Th('Experience'), html.Td(season_exp)]),
+        html.Tr([html.Th('Jersey'), html.Td(jersey)]),
+        html.Tr([html.Th('Position'), html.Td(position)]),
+        html.Tr([html.Th('Team'), html.Td(team_abbreviation)])
+    ],style=style_table)
+    if player_name.endswith('s'):
+        profile = f"{player_name}' Profile"
+    else:
+        profile = f"{player_name}'s Profile"
+    offensive_profile = pd.read_csv('./assets/offensive_roles.csv')
+    offensive_profile = offensive_profile[offensive_profile['PLAYER_ID']==player_id]
+    offensive_profile = offensive_profile['new_clusters'].iloc[0]
+
+    clustering_explanation = [dbc.PopoverHeader("Clustering model"),    dbc.PopoverBody('''The K-means clustering model groups basketball players based on 
+                                                                                            their frequency in nine different playtypes. It identifies similarities 
+                                                                                            among players and assigns them to clusters with similar playstyle patterns.
+                                                                                            This helps coaches and analysts understand player strengths, roles, 
+                                                                                            and tendencies. Clusters reveal distinct groups of players, 
+                                                                                            such as iso specialists or rolling bigs, 
+                                                                                            enabling better player evaluation and team composition.''')]
+
+    clustering = html.Div([html.H3('Offensive Role', style={"textDecoration": "underline", "cursor": "pointer"}, id="offensive-role-model"),
+                    dbc.Popover(
+                        clustering_explanation, 
+                        id="popover-target-2",
+                        is_open=False,
+                        target="offensive-role-model",
+                        placement="bottom-start",
+                    ),
+                    html.H3(offensive_profile,style={'font-weight':'bold'})]), 
+    # Combine the header and the info table
+    header = html.Div([dbc.Row(html.H3(profile,style={'text-align':'center','font-weight':'bold'}),justify='center'),
+                       dbc.Row([image,info_table,clustering])
+                       ])
+    return header
+# Define the callback to toggle the popover
+@app_dash.callback(
+    Output("popover-target-2", "is_open"),
+    [Input("offensive-role-model", "n_clicks")],
+    [State("popover-target-2", "is_open")],
+)
+def toggle_popover(n, is_open):
+    if n:
+        return not is_open
+    return is_open
 @app_dash.callback(Output('team_dropdown','options'),
                    Input('player','value'))
 

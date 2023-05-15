@@ -1,0 +1,325 @@
+PLAYER_ID,PLAYER_NAME,new_clusters
+2544,LeBron James,Iso Heavy Ball Handler
+101108,Chris Paul,PnR Heavy Ball Handler
+200768,Kyle Lowry,Supportive Ball Handler
+201142,Kevin Durant,Iso Heavy Ball Handler
+201144,Mike Conley,PnR Heavy Ball Handler
+201566,Russell Westbrook,Iso Heavy Ball Handler
+201569,Eric Gordon,Supportive Ball Handler
+201609,Goran Dragic,Supportive Ball Handler
+201935,James Harden,Iso Heavy Ball Handler
+201939,Stephen Curry,Iso Heavy Ball Handler
+201942,DeMar DeRozan,PnR Heavy Ball Handler
+201950,Jrue Holiday,PnR Heavy Ball Handler
+202322,John Wall,Iso Heavy Ball Handler
+202330,Gordon Hayward,Supportive Ball Handler
+202331,Paul George,Iso Heavy Ball Handler
+202681,Kyrie Irving,Iso Heavy Ball Handler
+202692,Alec Burks,PnR Heavy Ball Handler
+202695,Kawhi Leonard,Iso Heavy Ball Handler
+202704,Reggie Jackson,Supportive Ball Handler
+202709,Cory Joseph,Supportive Ball Handler
+202710,Jimmy Butler,Iso Heavy Ball Handler
+202711,Bojan Bogdanovic,Iso Heavy Ball Handler
+203078,Bradley Beal,Iso Heavy Ball Handler
+203081,Damian Lillard,PnR Heavy Ball Handler
+203114,Khris Middleton,Iso Heavy Ball Handler
+203115,Will Barton,Supportive Ball Handler
+203468,CJ McCollum,Supportive Ball Handler
+203471,Dennis Schroder,PnR Heavy Ball Handler
+203506,Victor Oladipo,Supportive Ball Handler
+203897,Zach LaVine,PnR Heavy Ball Handler
+203903,Jordan Clarkson,Supportive Ball Handler
+203915,Spencer Dinwiddie,Iso Heavy Ball Handler
+204060,Joe Ingles,Supportive Ball Handler
+204456,T.J. McConnell,PnR Heavy Ball Handler
+1626145,Tyus Jones,Supportive Ball Handler
+1626153,Delon Wright,Supportive Ball Handler
+1626156,D'Angelo Russell,Supportive Ball Handler
+1626164,Devin Booker,Iso Heavy Ball Handler
+1626166,Cameron Payne,Supportive Ball Handler
+1626179,Terry Rozier,Supportive Ball Handler
+1626181,Norman Powell,Supportive Ball Handler
+1627739,Kris Dunn,Supportive Ball Handler
+1627742,Brandon Ingram,Iso Heavy Ball Handler
+1627747,Caris LeVert,Supportive Ball Handler
+1627749,Dejounte Murray,PnR Heavy Ball Handler
+1627750,Jamal Murray,Iso Heavy Ball Handler
+1627763,Malcolm Brogdon,Supportive Ball Handler
+1627783,Pascal Siakam,Iso Heavy Ball Handler
+1627832,Fred VanVleet,PnR Heavy Ball Handler
+1628365,Markelle Fultz,Supportive Ball Handler
+1628368,De'Aaron Fox,PnR Heavy Ball Handler
+1628369,Jayson Tatum,Iso Heavy Ball Handler
+1628370,Malik Monk,Supportive Ball Handler
+1628372,Dennis Smith Jr.,Supportive Ball Handler
+1628378,Donovan Mitchell,PnR Heavy Ball Handler
+1628415,Dillon Brooks,Supportive Ball Handler
+1628420,Monte Morris,Supportive Ball Handler
+1628973,Jalen Brunson,PnR Heavy Ball Handler
+1628975,Jevon Carter,Supportive Ball Handler
+1628983,Shai Gilgeous-Alexander,Iso Heavy Ball Handler
+1628984,Devonte' Graham,Supportive Ball Handler
+1629003,Shake Milton,Supportive Ball Handler
+1629012,Collin Sexton,Supportive Ball Handler
+1629014,Anfernee Simons,Supportive Ball Handler
+1629027,Trae Young,PnR Heavy Ball Handler
+1629029,Luka Doncic,Iso Heavy Ball Handler
+1629134,Kendrick Nunn,Supportive Ball Handler
+1629216,Gabe Vincent,Supportive Ball Handler
+1629614,Andrew Nembhard,Supportive Ball Handler
+1629627,Zion Williamson,Iso Heavy Ball Handler
+1629630,Ja Morant,PnR Heavy Ball Handler
+1629636,Darius Garland,PnR Heavy Ball Handler
+1629638,Nickeil Alexander-Walker,Supportive Ball Handler
+1629639,Tyler Herro,Supportive Ball Handler
+1629645,Kevin Porter Jr.,PnR Heavy Ball Handler
+1629659,Talen Horton-Tucker,PnR Heavy Ball Handler
+1629660,Ty Jerome,Supportive Ball Handler
+1629669,Jaylen Nowell,Supportive Ball Handler
+1629673,Jordan Poole,Iso Heavy Ball Handler
+1630162,Anthony Edwards,Iso Heavy Ball Handler
+1630163,LaMelo Ball,PnR Heavy Ball Handler
+1630165,Killian Hayes,PnR Heavy Ball Handler
+1630169,Tyrese Haliburton,PnR Heavy Ball Handler
+1630170,Devin Vassell,Supportive Ball Handler
+1630175,Cole Anthony,PnR Heavy Ball Handler
+1630177,Theo Maledon,Supportive Ball Handler
+1630178,Tyrese Maxey,Supportive Ball Handler
+1630193,Immanuel Quickley,Supportive Ball Handler
+1630200,Tre Jones,PnR Heavy Ball Handler
+1630217,Desmond Bane,Supportive Ball Handler
+1630224,Jalen Green,PnR Heavy Ball Handler
+1630227,Daishen Nix,Supportive Ball Handler
+1630528,Josh Christopher,Supportive Ball Handler
+1630532,Franz Wagner,Supportive Ball Handler
+1630538,Bones Hyland,Supportive Ball Handler
+1630544,Tre Mann,Supportive Ball Handler
+1630559,Austin Reaves,Supportive Ball Handler
+1630560,Cam Thomas,Iso Heavy Ball Handler
+1630581,Josh Giddey,Supportive Ball Handler
+1630591,Jalen Suggs,Supportive Ball Handler
+1630595,Cade Cunningham,PnR Heavy Ball Handler
+1630613,Duane Washington Jr.,PnR Heavy Ball Handler
+1630631,Jose Alvarado,Supportive Ball Handler
+1630692,Jordan Goodwin,Supportive Ball Handler
+1630702,Jaden Hardy,Supportive Ball Handler
+1631093,Jaden Ivey,PnR Heavy Ball Handler
+1631094,Paolo Banchero,Iso Heavy Ball Handler
+1631097,Bennedict Mathurin,Supportive Ball Handler
+1631104,Blake Wesley,Supportive Ball Handler
+1631114,Jalen Williams,Supportive Ball Handler
+201145,Jeff Green,PnP Big
+201572,Brook Lopez,PnP Big
+202685,Jonas Valanciunas,Post-Up Big
+202687,Bismack Biyombo,Roll & Cut Big
+202696,Nikola Vucevic,Jack-of-all Trades Big
+203076,Anthony Davis,Jack-of-all Trades Big
+203083,Andre Drummond,Roll & Cut Big
+203110,Draymond Green,PnP Big
+203210,JaMychal Green,PnP Big
+203486,Mason Plumlee,Roll & Cut Big
+203497,Rudy Gobert,Roll & Cut Big
+203500,Steven Adams,Roll & Cut Big
+203507,Giannis Antetokounmpo,Jack-of-all Trades Big
+203932,Aaron Gordon,Jack-of-all Trades Big
+203939,Dwight Powell,Roll & Cut Big
+203954,Joel Embiid,Jack-of-all Trades Big
+203991,Clint Capela,Roll & Cut Big
+203994,Jusuf Nurkic,Post-Up Big
+203999,Nikola Jokic,Jack-of-all Trades Big
+204001,Kristaps Porzingis,Jack-of-all Trades Big
+1626149,Montrezl Harrell,Post-Up Big
+1626167,Myles Turner,PnP Big
+1626171,Bobby Portis,Jack-of-all Trades Big
+1626172,Kevon Looney,Roll & Cut Big
+1626174,Christian Wood,Jack-of-all Trades Big
+1626195,Willy Hernangomez,Roll & Cut Big
+1626204,Larry Nance Jr.,Roll & Cut Big
+1627732,Ben Simmons,Roll & Cut Big
+1627734,Domantas Sabonis,Post-Up Big
+1627751,Jakob Poeltl,Roll & Cut Big
+1627826,Ivica Zubac,Roll & Cut Big
+1627884,Derrick Jones Jr.,PnP Big
+1628380,Zach Collins,Jack-of-all Trades Big
+1628386,Jarrett Allen,Roll & Cut Big
+1628389,Bam Adebayo,Post-Up Big
+1628392,Isaiah Hartenstein,Roll & Cut Big
+1628418,Thomas Bryant,Roll & Cut Big
+1628963,Marvin Bagley III,Jack-of-all Trades Big
+1628976,Wendell Carter Jr.,PnP Big
+1629002,Chimezie Metu,Roll & Cut Big
+1629011,Mitchell Robinson,Roll & Cut Big
+1629020,Jarred Vanderbilt,Roll & Cut Big
+1629021,Moritz Wagner,PnP Big
+1629028,Deandre Ayton,Post-Up Big
+1629111,Jock Landale,Post-Up Big
+1629117,Wenyen Gabriel,Roll & Cut Big
+1629234,Drew Eubanks,Roll & Cut Big
+1629634,Brandon Clarke,Roll & Cut Big
+1629651,Nic Claxton,Roll & Cut Big
+1629655,Daniel Gafford,Roll & Cut Big
+1629675,Naz Reid,PnP Big
+1630164,James Wiseman,Post-Up Big
+1630168,Onyeka Okongwu,Roll & Cut Big
+1630173,Precious Achiuwa,PnP Big
+1630188,Jalen Smith,PnP Big
+1630192,Zeke Nnaji,PnP Big
+1630194,Paul Reed,Roll & Cut Big
+1630208,Nick Richards,Roll & Cut Big
+1630214,Xavier Tillman,Roll & Cut Big
+1630543,Isaiah Jackson,Roll & Cut Big
+1630578,Alperen Sengun,Post-Up Big
+1630596,Evan Mobley,PnP Big
+1631105,Jalen Duren,Roll & Cut Big
+1631109,Mark Williams,Roll & Cut Big
+1631117,Walker Kessler,Roll & Cut Big
+200752,Rudy Gay,Jack-of-all Trades Wing
+200782,P.J. Tucker,Spot-Up Wing
+201143,Al Horford,Spot-Up Wing
+201567,Kevin Love,Spot-Up Wing
+201587,Nicolas Batum,Spot-Up Wing
+201976,Patrick Beverley,Spot-Up Wing
+202691,Klay Thompson,Movement Wing
+202694,Marcus Morris Sr.,Spot-Up Wing
+202699,Tobias Harris,Jack-of-all Trades Wing
+203082,Terrence Ross,Movement Wing
+203084,Harrison Barnes,Jack-of-all Trades Wing
+203482,Kelly Olynyk,Jack-of-all Trades Wing
+203484,Kentavious Caldwell-Pope,Ball Handling Wing
+203488,Mike Muscala,Spot-Up Wing
+203493,Reggie Bullock,Spot-Up Wing
+203496,Robert Covington,Spot-Up Wing
+203501,Tim Hardaway Jr.,Spot-Up Wing
+203552,Seth Curry,Ball Handling Wing
+203914,Gary Harris,Movement Wing
+203924,Jerami Grant,Jack-of-all Trades Wing
+203925,Joe Harris,Spot-Up Wing
+203926,Doug McDermott,Movement Wing
+203933,T.J. Warren,Spot-Up Wing
+203935,Marcus Smart,Ball Handling Wing
+203937,Kyle Anderson,Ball Handling Wing
+203944,Julius Randle,Jack-of-all Trades Wing
+203952,Andrew Wiggins,Jack-of-all Trades Wing
+203967,Dario Saric,Jack-of-all Trades Wing
+203992,Bogdan Bogdanovic,Ball Handling Wing
+1626157,Karl-Anthony Towns,Jack-of-all Trades Wing
+1626162,Kelly Oubre Jr.,Ball Handling Wing
+1626168,Trey Lyles,Spot-Up Wing
+1626192,Pat Connaughton,Spot-Up Wing
+1626196,Josh Richardson,Ball Handling Wing
+1626220,Royce O'Neale,Spot-Up Wing
+1626224,Cedi Osman,Ball Handling Wing
+1627736,Malik Beasley,Movement Wing
+1627741,Buddy Hield,Ball Handling Wing
+1627752,Taurean Prince,Spot-Up Wing
+1627759,Jaylen Brown,Ball Handling Wing
+1627777,Georges Niang,Spot-Up Wing
+1627814,Damion Lee,Spot-Up Wing
+1627827,Dorian Finney-Smith,Spot-Up Wing
+1627936,Alex Caruso,Spot-Up Wing
+1628374,Lauri Markkanen,Jack-of-all Trades Wing
+1628379,Luke Kennard,Movement Wing
+1628381,John Collins,Jack-of-all Trades Wing
+1628384,O.G. Anunoby,Ball Handling Wing
+1628398,Kyle Kuzma,Ball Handling Wing
+1628401,Derrick White,Ball Handling Wing
+1628404,Josh Hart,Spot-Up Wing
+1628410,Edmond Sumner,Ball Handling Wing
+1628427,Vlatko Cancar,Jack-of-all Trades Wing
+1628449,Chris Boucher,Jack-of-all Trades Wing
+1628470,Torrey Craig,Spot-Up Wing
+1628960,Grayson Allen,Ball Handling Wing
+1628966,Keita Bates-Diop,Jack-of-all Trades Wing
+1628969,Mikal Bridges,Ball Handling Wing
+1628971,Bruce Brown,Ball Handling Wing
+1628972,Troy Brown Jr.,Spot-Up Wing
+1628977,Hamidou Diallo,Jack-of-all Trades Wing
+1628978,Donte DiVincenzo,Ball Handling Wing
+1628989,Kevin Huerter,Movement Wing
+1628991,Jaren Jackson Jr.,Jack-of-all Trades Wing
+1628995,Kevin Knox II,Spot-Up Wing
+1628997,Caleb Martin,Spot-Up Wing
+1629001,De'Anthony Melton,Ball Handling Wing
+1629006,Josh Okogie,Spot-Up Wing
+1629008,Michael Porter Jr.,Movement Wing
+1629013,Landry Shamet,Ball Handling Wing
+1629018,Gary Trent Jr.,Ball Handling Wing
+1629022,Lonnie Walker IV,Ball Handling Wing
+1629023,P.J. Washington,Jack-of-all Trades Wing
+1629026,Kenrich Williams,Jack-of-all Trades Wing
+1629052,Oshae Brissett,Spot-Up Wing
+1629056,Terence Davis,Ball Handling Wing
+1629060,Rui Hachimura,Jack-of-all Trades Wing
+1629130,Duncan Robinson,Movement Wing
+1629139,Yuta Watanabe,Spot-Up Wing
+1629312,Haywood Highsmith,Spot-Up Wing
+1629611,Terance Mann,Ball Handling Wing
+1629622,Max Strus,Movement Wing
+1629626,Bol Bol,Jack-of-all Trades Wing
+1629628,RJ Barrett,Ball Handling Wing
+1629629,Cam Reddish,Ball Handling Wing
+1629631,De'Andre Hunter,Ball Handling Wing
+1629632,Coby White,Ball Handling Wing
+1629640,Keldon Johnson,Ball Handling Wing
+1629641,Romeo Langford,Ball Handling Wing
+1629642,Nassir Little,Spot-Up Wing
+1629652,Luguentz Dort,Ball Handling Wing
+1629656,Quentin Grimes,Spot-Up Wing
+1629661,Cameron Johnson,Spot-Up Wing
+1629667,Jalen McDaniels,Spot-Up Wing
+1629670,Jordan Nwora,Ball Handling Wing
+1629684,Grant Williams,Spot-Up Wing
+1629723,John Konchar,Spot-Up Wing
+1630166,Deni Avdija,Ball Handling Wing
+1630167,Obi Toppin,Spot-Up Wing
+1630171,Isaac Okoro,Spot-Up Wing
+1630172,Patrick Williams,Spot-Up Wing
+1630174,Aaron Nesmith,Spot-Up Wing
+1630180,Saddiq Bey,Ball Handling Wing
+1630181,R.J. Hampton,Spot-Up Wing
+1630182,Josh Green,Spot-Up Wing
+1630183,Jaden McDaniels,Spot-Up Wing
+1630191,Isaiah Stewart,Jack-of-all Trades Wing
+1630197,Aleksej Pokusevski,Jack-of-all Trades Wing
+1630198,Isaiah Joe,Spot-Up Wing
+1630201,Malachi Flynn,Ball Handling Wing
+1630202,Payton Pritchard,Ball Handling Wing
+1630205,Lamar Stevens,Spot-Up Wing
+1630228,Jonathan Kuminga,Jack-of-all Trades Wing
+1630230,Naji Marshall,Ball Handling Wing
+1630231,Kenyon Martin Jr.,Jack-of-all Trades Wing
+1630237,Anthony Lamb,Spot-Up Wing
+1630245,Ayo Dosunmu,Ball Handling Wing
+1630256,Jae'Sean Tate,Jack-of-all Trades Wing
+1630526,Jeremiah Robinson-Earl,Jack-of-all Trades Wing
+1630529,Herbert Jones,Spot-Up Wing
+1630530,Trey Murphy III,Spot-Up Wing
+1630534,Ochai Agbaji,Movement Wing
+1630537,Chris Duarte,Ball Handling Wing
+1630541,Moses Moody,Spot-Up Wing
+1630550,JT Thor,Spot-Up Wing
+1630552,Jalen Johnson,Jack-of-all Trades Wing
+1630557,Corey Kispert,Spot-Up Wing
+1630558,Davion Mitchell,Ball Handling Wing
+1630567,Scottie Barnes,Jack-of-all Trades Wing
+1630570,Trendon Watford,Jack-of-all Trades Wing
+1630573,Sam Hauser,Spot-Up Wing
+1630583,Santi Aldama,Spot-Up Wing
+1630587,Isaiah Livers,Spot-Up Wing
+1630598,Aaron Wiggins,Jack-of-all Trades Wing
+1630647,Eugene Omoruyi,Spot-Up Wing
+1630699,MarJon Beauchamp,Ball Handling Wing
+1630700,Dyson Daniels,Ball Handling Wing
+1631095,Jabari Smith Jr.,Jack-of-all Trades Wing
+1631099,Keegan Murray,Spot-Up Wing
+1631100,AJ Griffin,Movement Wing
+1631101,Shaedon Sharpe,Ball Handling Wing
+1631103,Malaki Branham,Ball Handling Wing
+1631106,Tari Eason,Jack-of-all Trades Wing
+1631110,Jeremy Sochan,Ball Handling Wing
+1631119,Jaylin Williams,Jack-of-all Trades Wing
+1631121,Bryce McGowens,Ball Handling Wing
+1631128,Christian Braun,Spot-Up Wing
+1631223,David Roddy,Spot-Up Wing
+1631323,Simone Fontecchio,Movement Wing
