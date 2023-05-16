@@ -41,7 +41,7 @@ CELL_STYLE = {'fontFamily':'Segoe UI',
 
 years = ['2021-22','2022-23']
 df_names = pd.read_csv('./assets/players_teams.csv')
-df = pd.read_csv('./assets/NBA_Play_Types_16_23.csv')
+df = pd.read_csv('./assets/playtypes.csv')
 df = df[(df['SEASON'].isin(years))]
 
 def discrete_background_color_bins(df, n_bins=5, columns='all'):
@@ -289,7 +289,7 @@ def render_tendency_table(player_name):
         table = dash_table.DataTable(
                 data=df_pivoted_1.to_dict('records'),
                 columns= columns,
-                style_data_conditional=styles_all,
+                #style_data_conditional=styles_all,
                 style_cell_conditional=[
                         {
                             'if': {'column_id': 'Play Type'},
@@ -302,7 +302,7 @@ def render_tendency_table(player_name):
         table_2 = dash_table.DataTable(
                 data=df_pivoted_2.to_dict('records'),
                 columns= columns_2,
-                style_data_conditional=styles_all_2,
+                #style_data_conditional=styles_all_2,
                 style_cell_conditional=[
                         {
                             'if': {'column_id': 'Play Type'},
@@ -386,7 +386,7 @@ def render_table_xpps(player_name):
                 style_data=CELL_STYLE
             )
     return table
-@app_dash.callback( Output('header','children'),
+@app_dash.callback(Output('header','children'),
                    Input('player','value'),
                   )
 def return_header(player_name):
@@ -424,7 +424,9 @@ def return_header(player_name):
 
     # Create the header component
     image = html.Img(src=f'https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png', style=style_img)
-
+    offensive_profile = pd.read_csv('./assets/offensive_roles.csv')
+    offensive_profile = offensive_profile[offensive_profile['PLAYER_ID']==player_id]
+    offensive_profile = offensive_profile['new_clusters'].iloc[0]
     # Create a table to display the player's information
     info_table = html.Table([
         html.Tr([html.Th('Height'), html.Td(height)]),
@@ -432,39 +434,43 @@ def return_header(player_name):
         html.Tr([html.Th('Experience'), html.Td(season_exp)]),
         html.Tr([html.Th('Jersey'), html.Td(jersey)]),
         html.Tr([html.Th('Position'), html.Td(position)]),
-        html.Tr([html.Th('Team'), html.Td(team_abbreviation)])
+        html.Tr([html.Th('Team'), html.Td(team_abbreviation)]),
+        html.Tr([html.Th('Offensive Role',
+                         style={"textDecoration": "underline", "cursor": "pointer"},
+                         id="offensive-role-model"), html.Td(offensive_profile)])
     ],style=style_table)
     if player_name.endswith('s'):
         profile = f"{player_name}' Profile"
     else:
         profile = f"{player_name}'s Profile"
-    offensive_profile = pd.read_csv('./assets/offensive_roles.csv')
-    offensive_profile = offensive_profile[offensive_profile['PLAYER_ID']==player_id]
-    offensive_profile = offensive_profile['new_clusters'].iloc[0]
 
-    clustering_explanation = [dbc.PopoverHeader("Clustering model"),    dbc.PopoverBody('''The K-means clustering model groups basketball players based on 
+    clustering_explanation = [dbc.PopoverHeader("Offensive Role Clustering model"),    dbc.PopoverBody('''The K-means clustering model groups basketball players based on 
                                                                                             their frequency in nine different playtypes. It identifies similarities 
                                                                                             among players and assigns them to clusters with similar playstyle patterns.
                                                                                             This helps coaches and analysts understand player strengths, roles, 
                                                                                             and tendencies. Clusters reveal distinct groups of players, 
                                                                                             such as iso specialists or rolling bigs, 
                                                                                             enabling better player evaluation and team composition.''')]
-
-    clustering = html.Div([html.H3('Offensive Role', style={"textDecoration": "underline", "cursor": "pointer"}, id="offensive-role-model"),
+    clustering = dbc.Container([html.H3('Offensive Role', style={"textDecoration": "underline", "cursor": "pointer"}, id="offensive-role-model"),
                     dbc.Popover(
                         clustering_explanation, 
                         id="popover-target-2",
-                        is_open=False,
                         target="offensive-role-model",
                         placement="bottom-start",
                     ),
                     html.H3(offensive_profile,style={'font-weight':'bold'})]), 
     # Combine the header and the info table
     header = html.Div([dbc.Row(html.H3(profile,style={'text-align':'center','font-weight':'bold'}),justify='center'),
-                       dbc.Row([image,info_table,clustering])
+                       dbc.Row([image,info_table,
+                                dbc.Popover(
+                                    clustering_explanation, 
+                                    id="popover-target-2",
+                                    target="offensive-role-model",
+                                    placement="bottom-start",
+                                )])
                        ])
     return header
-# Define the callback to toggle the popover
+#Define the callback to toggle the popover
 @app_dash.callback(
     Output("popover-target-2", "is_open"),
     [Input("offensive-role-model", "n_clicks")],
