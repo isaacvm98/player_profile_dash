@@ -413,14 +413,14 @@ def return_header(player_name):
         'margin-top': '6rem'}
     df_player = df[(df['PLAYER_NAME']==player_name)]
     player_id = df_player['PLAYER_ID'].iloc[0]
-    info = commonplayerinfo.CommonPlayerInfo(player_id).get_data_frames()[0]
-    # Extract the player's information from the DataFrame
-    height = info['HEIGHT'].iloc[0]
-    weight = info['WEIGHT'].iloc[0]
-    season_exp = info['SEASON_EXP'].iloc[0]
-    jersey = info['JERSEY'].iloc[0]
-    position = info['POSITION'].iloc[0]
-    team_abbreviation = info['TEAM_ABBREVIATION'].iloc[0]
+    # info = commonplayerinfo.CommonPlayerInfo(player_id).get_data_frames()[0]
+    # # Extract the player's information from the DataFrame
+    # height = info['HEIGHT'].iloc[0]
+    # weight = info['WEIGHT'].iloc[0]
+    # season_exp = info['SEASON_EXP'].iloc[0]
+    # jersey = info['JERSEY'].iloc[0]
+    # position = info['POSITION'].iloc[0]
+    # team_abbreviation = info['TEAM_ABBREVIATION'].iloc[0]
 
     # Create the header component
     image = html.Img(src=f'https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png', style=style_img)
@@ -429,12 +429,12 @@ def return_header(player_name):
     offensive_profile = offensive_profile['new_clusters'].iloc[0]
     # Create a table to display the player's information
     info_table = html.Table([
-        html.Tr([html.Th('Height'), html.Td(height)]),
-        html.Tr([html.Th('Weight'), html.Td(weight)]),
-        html.Tr([html.Th('Experience'), html.Td(season_exp)]),
-        html.Tr([html.Th('Jersey'), html.Td(jersey)]),
-        html.Tr([html.Th('Position'), html.Td(position)]),
-        html.Tr([html.Th('Team'), html.Td(team_abbreviation)]),
+        # html.Tr([html.Th('Height'), html.Td(height)]),
+        # html.Tr([html.Th('Weight'), html.Td(weight)]),
+        # html.Tr([html.Th('Experience'), html.Td(season_exp)]),
+        # html.Tr([html.Th('Jersey'), html.Td(jersey)]),
+        # html.Tr([html.Th('Position'), html.Td(position)]),
+        # html.Tr([html.Th('Team'), html.Td(team_abbreviation)]),
         html.Tr([html.Th('Offensive Role',
                          style={"textDecoration": "underline", "cursor": "pointer"},
                          id="offensive-role-model"), html.Td(offensive_profile)])
