@@ -8,6 +8,7 @@ import psycopg2
 import os
 from dotenv import load_dotenv
 import requests
+import plotly.graph_objects as go
 load_dotenv()
 
 DB = os.environ['database']
@@ -191,7 +192,7 @@ assists_layout = html.Div([
         html.H3('Assists Network',style={'text-align':'center'}),
     ]),
     html.Br(),
-    html.Div(id='assist_fig')
+    dcc.Graph(id='assist_fig',config=config_b)
     ])
 
 
@@ -258,7 +259,7 @@ def render_tendency_table(player_name):
         color_cols = [i for i in rename_dict.values()]
         added_cols = ['Frequency Change','PPPoss Change','Frequency Percentile Change','PPPoss Percentile Change']
         color_cols = color_cols + added_cols 
-        df_pivoted_1.rename(columns=rename_dict,inplace=True)
+        df_pivoted_1 = df_pivoted_1.rename(columns=rename_dict)
         df_pivoted_1 = df_pivoted_1[df_pivoted_1[f'Frequency {years[1]}']>.05]
         styles_all = []
         for col in df_pivoted_1.columns.to_list():
@@ -277,7 +278,7 @@ def render_tendency_table(player_name):
             else:
                 rv = {"name": col, "id": col,'type':'numeric', 'format':dash_table.Format.Format(precision=2, scheme=dash_table.Format.Scheme.decimal_integer)}
             columns.append(rv)
-        df_pivoted_2.rename(columns=rename_dict,inplace=True)
+        df_pivoted_2 = df_pivoted_2.rename(columns=rename_dict)
         df_pivoted_2 = df_pivoted_2[df_pivoted_2[f'Frequency {years[1]}']>.05]
         df_pivoted_2.drop(f'Frequency {years[1]}',axis = 1, inplace=True)
         styles_all_2 = []
@@ -563,13 +564,16 @@ def render_shotchart(player_name,team_id):
             )
     return table
 
-@app_dash.callback(Output('assist_fig','children'),
+@app_dash.callback(Output('assist_fig','figure'),
                    Input('player','value'))
 
 def get_assist_fig(player_name):
     df_player = df_names[df_names['PLAYER_NAME']==player_name]
     player_id = df_player['PLAYER_ID'].iloc[0]
-    team_id = df_player['TEAM_ID'].iloc[0]
+    if len(df_player)>1:
+        team_id = df_player['TEAM_ID'].iloc[-1]
+    else:
+        team_id = df_player['TEAM_ID'].iloc[0]
     url = "https://api.pbpstats.com/get-assist-networks/nba"
     params = {
         "Season": "2022-23",
@@ -579,4 +583,60 @@ def get_assist_fig(player_name):
     }
     response = requests.get(url, params=params)
     response_json = response.json()
-    return html.H5(response.status_code)
+    df = pd.DataFrame(response_json["results"]["links"])
+    df = df[df['source'] == str(player_id)]
+    dict_names = dict(zip(df_names['PLAYER_ID'].astype(str),df_names['PLAYER_NAME']))
+    df['source'] = df['source'].map(dict_names)
+    df['target'] = df['target'].map(dict_names)
+    # Define colors with transparency for each assist type
+    assist_type_colors = {
+        'Arc3': 'rgba(0, 0, 255, 0.5)',
+        'AtRim': 'rgba(0, 128, 0, 0.5)',
+        'Corner3': 'rgba(128, 0, 128, 0.5)',
+        'LongMidRange': 'rgba(255, 165, 0, 0.5)',
+        'ShortMidRange': 'rgba(255, 0, 0, 0.5)'
+    }
+
+    # Create nodes for source, assist type, and target players
+    assist_types = ['Arc3', 'AtRim', 'Corner3', 'LongMidRange', 'ShortMidRange']
+    players = list(set(df['source']).union(set(df['target'])))
+    nodes = assist_types + players
+    node_dict = {node: idx for idx, node in enumerate(nodes)}
+    node_colors = [assist_type_colors.get(node, 'blue') for node in nodes]
+    # Create links
+    links = []
+    for idx, row in df.iterrows():
+        source = node_dict[row['source']]
+        target_player = node_dict[row['target']]
+        value = row['value']
+        for assist_type in assist_types:
+            target_type = node_dict[assist_type]
+            assist_value = row[assist_type]
+            link_color = assist_type_colors[assist_type]  # Get the color for the assist type
+            links.append({'source': source, 'target': target_type, 'value': assist_value, 'color': link_color})
+            links.append({'source': target_type, 'target': target_player, 'value': assist_value, 'color': link_color})
+
+    # Create nodes
+    node_labels = [f"{assist_type}" for assist_type in assist_types] + [f"{player}" for player in players]
+
+    # Create Sankey diagram
+    fig = go.Figure(data=[go.Sankey(
+        node=dict(
+            pad=15,
+            thickness=20,
+            line=dict(color='black', width=0.5),
+            label=node_labels,
+            color=node_colors
+        ),
+        link=dict(
+            source=[link['source'] for link in links],
+            target=[link['target'] for link in links],
+            value=[link['value'] for link in links],
+            color=[link['color'] for link in links]
+        ))])
+
+    # Set layout title
+    fig.update_layout(
+        font=dict(size=14,family='Segoe UI')
+    )
+    return fig
