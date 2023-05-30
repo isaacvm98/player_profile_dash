@@ -7,7 +7,7 @@ from apps.vis.shotchart import create_shotchart
 import psycopg2
 import os
 from dotenv import load_dotenv
-from nba_api.stats.endpoints import commonplayerinfo
+import requests
 load_dotenv()
 
 DB = os.environ['database']
@@ -107,6 +107,7 @@ def create_layout():
                 dbc.Tab(label="Player Tendencies", tab_id="tab-1"),
                 dbc.Tab(label="Expected Points", tab_id="tab-2"),
                 dbc.Tab(label="Matchups", tab_id="tab-3"),
+                dbc.Tab(label="Assist Network", tab_id="tab-4")
             ],
             id="tabs",
             active_tab="tab-1",
@@ -185,6 +186,14 @@ matchup_layout = html.Div([
     )
     ])
 
+assists_layout = html.Div([
+    dbc.Row([
+        html.H3('Assists Network',style={'text-align':'center'}),
+    ]),
+    html.Br(),
+    html.Div(id='assist_fig')
+    ])
+
 
 # Define the callback to toggle the popover
 @app_dash.callback(
@@ -205,6 +214,8 @@ def switch_tab(at):
         return xpps_layout
     elif at == 'tab-3':
         return matchup_layout
+    elif at == 'tab-4':
+        return assists_layout
 
 @app_dash.callback(Output('tendencies-tables','children'),
                    Input('player','value'))
@@ -551,3 +562,21 @@ def render_shotchart(player_name,team_id):
                     ],
             )
     return table
+
+@app_dash.callback(Output('assist_fig','children'),
+                   Input('player','value'))
+
+def get_assist_fig(player_name):
+    df_player = df_names[df_names['PLAYER_NAME']==player_name]
+    player_id = df_player['PLAYER_ID'].iloc[0]
+    team_id = df_player['TEAM_ID'].iloc[0]
+    url = "https://api.pbpstats.com/get-assist-networks/nba"
+    params = {
+        "Season": "2022-23",
+        "SeasonType": "Regular Season",
+        "EntityType": "Team", # Options: Team, Lineup
+        "EntityId": f'{team_id}'
+    }
+    response = requests.get(url, params=params)
+    response_json = response.json()
+    return html.H5(response.status_code)
