@@ -425,14 +425,31 @@ def return_header(player_name):
         'margin-top': '6rem'}
     df_player = df[(df['PLAYER_NAME']==player_name)]
     player_id = df_player['PLAYER_ID'].iloc[0]
-    # info = commonplayerinfo.CommonPlayerInfo(player_id).get_data_frames()[0]
+    conn1 = psycopg2.connect(
+      database= DB,
+      user= USER_NAME, 
+      password= PASSWORD, 
+      port = PORT,
+      host = HOST 
+    )
+    cursor = conn1.cursor() 
+    sql1=f'''select salary,player_age,rapm,winsadded,added_value,offposs
+             from stats WHERE player_id = {player_id}'''
+    cursor.execute(sql1)
+    columns = cursor.description
+    conn1.commit()
+    columns = [columns[i][0] for i in range(len(columns))]
+    data = pd.DataFrame(cursor.fetchall(),columns=columns)
+    if len(data)>1:
+        data = data.iloc[0]
+    conn1.close()
     # # Extract the player's information from the DataFrame
-    # height = info['HEIGHT'].iloc[0]
-    # weight = info['WEIGHT'].iloc[0]
-    # season_exp = info['SEASON_EXP'].iloc[0]
-    # jersey = info['JERSEY'].iloc[0]
-    # position = info['POSITION'].iloc[0]
-    # team_abbreviation = info['TEAM_ABBREVIATION'].iloc[0]
+    salary = data['salary'].iloc[0]
+    player_age = data['player_age'].iloc[0]
+    rapm = data['rapm'].iloc[0]
+    winsadded = data['winsadded'].iloc[0]
+    added_value = data['added_value'].iloc[0]
+    possesions = data['offposs'].iloc[0]
 
     # Create the header component
     image = html.Img(src=f'https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png', style=style_img)
@@ -441,12 +458,18 @@ def return_header(player_name):
     offensive_profile = offensive_profile['new_clusters'].iloc[0]
     # Create a table to display the player's information
     info_table = html.Table([
-        # html.Tr([html.Th('Height'), html.Td(height)]),
-        # html.Tr([html.Th('Weight'), html.Td(weight)]),
-        # html.Tr([html.Th('Experience'), html.Td(season_exp)]),
-        # html.Tr([html.Th('Jersey'), html.Td(jersey)]),
-        # html.Tr([html.Th('Position'), html.Td(position)]),
-        # html.Tr([html.Th('Team'), html.Td(team_abbreviation)]),
+        html.Tr([html.Th('Salary'), html.Td("${:,}".format(salary))]),
+        html.Tr([html.Th('Age'), html.Td(player_age)]),
+        html.Tr([html.Th('RAPM',
+                         style={"textDecoration": "underline", "cursor": "pointer"},
+                         id="rapm"), html.Td(rapm)]),
+        html.Tr([html.Th('Wins Added',
+                         style={"textDecoration": "underline", "cursor": "pointer"},
+                         id="wins-added"), html.Td(round(winsadded,2))]),
+        html.Tr([html.Th('Added Value',
+                         style={"textDecoration": "underline", "cursor": "pointer"},
+                         id="added-value"), html.Td("${:,}".format(added_value))]),
+        html.Tr([html.Th('Possessions'), html.Td(possesions)]),
         html.Tr([html.Th('Offensive Role',
                          style={"textDecoration": "underline", "cursor": "pointer"},
                          id="offensive-role-model"), html.Td(offensive_profile)])
@@ -463,22 +486,48 @@ def return_header(player_name):
                                                                                             and tendencies. Clusters reveal distinct groups of players, 
                                                                                             such as iso specialists or rolling bigs, 
                                                                                             enabling better player evaluation and team composition.''')]
-    clustering = dbc.Container([html.H3('Offensive Role', style={"textDecoration": "underline", "cursor": "pointer"}, id="offensive-role-model"),
-                    dbc.Popover(
-                        clustering_explanation, 
-                        id="popover-target-2",
-                        target="offensive-role-model",
-                        placement="bottom-start",
-                    ),
-                    html.H3(offensive_profile,style={'font-weight':'bold'})]), 
+    rapm_explanation = [dbc.PopoverHeader("RAPM"),    dbc.PopoverBody('''RAPM is typically calculated by taking the last three seasons of all play by play 
+                                                                      data, weighting the latest season the most, and solving for a linear system of equations 
+                                                                      where every row of that system are the 5 offensive and defensive players on the floor 
+                                                                      between every substitution of every game and the resulting plus minus (also called a stint). 
+                                                                      We hope to find the plus minus contribution of every player by solving the linear system.
+                                                                      Source: https://medium.com/@johnchenmbb/95a7730ef59b''')]
+    wins_added_explanation = [dbc.PopoverHeader("Wins Added Calculation"),    dbc.PopoverBody('''Wins added was calculated using ((RAPM/100 + 3/100)*Possesions)/32.5.
+                                                                                              Adding +3/100 because thats the baseline that follow the NBA's salary structure.
+                                                                                              Dividing by 32.5 because 30-35 points of scoring margin adds one win to a team's 
+                                                                                              expected record, using the Pythagorean Wins Formula.''')]
+    added_value_explanation = [dbc.PopoverHeader("Added Value Calculation"),    dbc.PopoverBody('''Added Value is calculated using the following formula:
+                                                                                                Added Value = (Wins Added * League Value per Win) - Salary.
+                                                                                                League Value per Win is around $3.8 millon/win.
+                                                                                                The goal is the find the most cost efficient players, 
+                                                                                                that normally occurs during a player's rookie contracts.
+                                                                                                Inspired in Seth Partnow's book The Midrange Theory''')]
     # Combine the header and the info table
     header = html.Div([dbc.Row(html.H3(profile,style={'text-align':'center','font-weight':'bold'}),justify='center'),
                        dbc.Row([image,info_table,
                                 dbc.Popover(
                                     clustering_explanation, 
-                                    id="popover-target-2",
                                     target="offensive-role-model",
                                     placement="bottom-start",
+                                    id="popover-target-2"
+                                ),
+                                dbc.Popover(
+                                    rapm_explanation, 
+                                    target="rapm",
+                                    placement="bottom-start",
+                                    id="popover-rapm"
+                                ),
+                                dbc.Popover(
+                                    wins_added_explanation, 
+                                    target="wins-added",
+                                    placement="bottom-start",
+                                    id="popover-target-wins"
+                                ),
+                                dbc.Popover(
+                                    added_value_explanation, 
+                                    target="added-value",
+                                    placement="bottom-start",
+                                    id="popover-target-value"
                                 )])
                        ])
     return header
@@ -487,6 +536,33 @@ def return_header(player_name):
     Output("popover-target-2", "is_open"),
     [Input("offensive-role-model", "n_clicks")],
     [State("popover-target-2", "is_open")],
+)
+def toggle_popover(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+@app_dash.callback(
+    Output("popover-rapm", "is_open"),
+    [Input("rapm", "n_clicks")],
+    [State("popover-rapm", "is_open")],
+)
+def toggle_popover(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+@app_dash.callback(
+    Output("popover-target-wins", "is_open"),
+    [Input("wins-added", "n_clicks")],
+    [State("popover-target-wins", "is_open")],
+)
+def toggle_popover(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+@app_dash.callback(
+    Output("popover-target-value", "is_open"),
+    [Input("added-value", "n_clicks")],
+    [State("popover-target-value", "is_open")],
 )
 def toggle_popover(n, is_open):
     if n:
