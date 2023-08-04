@@ -171,7 +171,7 @@ xpps_layout = dbc.Row([
             width={"size": 6, "offset": 6},
         ),
         html.Br(),
-        html.Div(id='table_xpps', 
+        dbc.Col(id='table_xpps', 
                  style={'border': '1px solid lightgray', 'border-radius': '5px', 'padding': '10px'}
         )
     ])],sm=8)
