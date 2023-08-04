@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 # ===== SHOT VISUALISATION - V2 =====
 # ===================================
 # Draw a very simple shot chart
-def draw_plotly_court(fig, fig_width=600, margins=10):
+def draw_plotly_court(fig, margins=10):
 
     import numpy as np
 
@@ -19,8 +19,8 @@ def draw_plotly_court(fig, fig_width=600, margins=10):
             path += ' Z'
         return path
 
-    fig_height = fig_width * (470 + 2 * margins) / (500 + 2 * margins)
-    fig.update_layout(width=fig_width, height=fig_height)
+    #fig_height = fig_width * (470 + 2 * margins) / (500 + 2 * margins)
+    #fig.update_layout(width=fig_width, height=fig_height)
 
     # Set axes ranges
     fig.update_xaxes(range=[-250 - margins, 250 + margins])
@@ -222,8 +222,6 @@ def create_shotchart(data):
             range=[-100, 500],
             showticklabels=False
         ),
-        height=600,
-        width=650,
         plot_bgcolor='rgba(0, 0, 0, 0)',
         paper_bgcolor='rgba(0, 0, 0, 0)',
         legend=dict(y=1.08, x=0.5, orientation='h', xanchor='center', yanchor='middle', itemsizing='constant')
