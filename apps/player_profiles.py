@@ -40,11 +40,8 @@ CELL_STYLE = {'fontFamily':'Segoe UI',
             'height': '60px',
             'width': '80px'}
 
-years = ['2021-22','2022-23']
 df_names = pd.read_csv('./assets/players_teams.csv')
-df = pd.read_csv('./assets/playtypes.csv')
-df = df[(df['SEASON'].isin(years))]
-
+df = pd.read_csv('./assets/playtypes_new.csv')
 def discrete_background_color_bins(df, n_bins=5, columns='all'):
     """
     Apply discrete background color bins to a DataFrame containing numerical data.
@@ -222,14 +219,14 @@ def switch_tab(at):
                    Input('player','value'))
 def render_tendency_table(player_name):
     try:
+        
         percentage = dash_table.FormatTemplate.percentage(1)
         
         df_player = df[(df['PLAYER_NAME']==player_name)]
-
-        df_player = df_player.groupby(['PLAY_TYPE','SEASON'],as_index=False)[['FREQ','FREQ_PCTL','PPP','PPP_PCTL']].mean()
+        df_player['SEASON_ID'] = df_player['SEASON_ID'].astype(str)
 
         # Pivot the dataframe
-        df_pivoted = pd.pivot_table(df_player, index='PLAY_TYPE', columns='SEASON', values=['FREQ','FREQ_PCTL','PPP','PPP_PCTL'])
+        df_pivoted = pd.pivot_table(df_player, index='PLAY_TYPE', columns='SEASON_ID', values=['PPP','PERCENTILE','POSS_PCT'])
 
         # Flatten the multi-level column index
         df_pivoted.columns = [' '.join(col).strip() for col in df_pivoted.columns.values]
@@ -237,27 +234,22 @@ def render_tendency_table(player_name):
         # Reset the index
         df_pivoted = df_pivoted.reset_index()
 
-        df_pivoted['Frequency Change'] = (df_pivoted[f'FREQ {years[1]}'] - df_pivoted[f'FREQ {years[0]}']) / df_pivoted[f'FREQ {years[0]}']
+        years = ['2022','2023']
+        df_pivoted['Frequency Change'] = (df_pivoted[f'POSS_PCT {years[1]}'] - df_pivoted[f'POSS_PCT {years[0]}']) / df_pivoted[f'POSS_PCT {years[0]}']
         df_pivoted['PPPoss Change'] = (df_pivoted[f'PPP {years[1]}'] - df_pivoted[f'PPP {years[0]}']) / df_pivoted[f'PPP {years[0]}']
-        df_pivoted['Frequency Percentile Change'] = (df_pivoted[f'FREQ_PCTL {years[1]}'] - df_pivoted[f'FREQ_PCTL {years[0]}']) / df_pivoted[f'FREQ_PCTL {years[0]}']
-        df_pivoted['PPPoss Percentile Change'] = (df_pivoted[f'PPP_PCTL {years[1]}'] - df_pivoted[f'PPP_PCTL {years[0]}']) / df_pivoted[f'PPP_PCTL {years[0]}']
-        df_pivoted_1 = df_pivoted[['PLAY_TYPE',f'FREQ {years[0]}', f'FREQ {years[1]}','Frequency Change',
-                                f'FREQ_PCTL {years[0]}',f'FREQ_PCTL {years[1]}','Frequency Percentile Change',
-                                ]]
-        df_pivoted_2 = df_pivoted[['PLAY_TYPE',
-                                f'PPP {years[0]}',f'PPP {years[1]}', 'PPPoss Change',
-                                f'PPP_PCTL {years[0]}', f'PPP_PCTL {years[1]}','PPPoss Percentile Change',f'FREQ {years[1]}']]
+        df_pivoted['PPPoss Percentile Change'] = (df_pivoted[f'PERCENTILE {years[1]}'] - df_pivoted[f'PERCENTILE {years[0]}']) / df_pivoted[f'PERCENTILE {years[0]}']
+        df_pivoted_1 = df_pivoted[['PLAY_TYPE',f'POSS_PCT {years[0]}', f'POSS_PCT {years[1]}','Frequency Change',
+                        f'PPP {years[0]}',f'PPP {years[1]}', 'PPPoss Change',
+                        f'PERCENTILE {years[0]}', f'PERCENTILE {years[1]}','PPPoss Percentile Change']]
         rename_dict = {'PLAY_TYPE': 'Play Type',
-                        f'FREQ {years[0]}': f'Frequency {years[0]}', 
-                    f'FREQ {years[1]}':f'Frequency {years[1]}', 
-                        f'PPP {years[0]}': f'PPPoss {years[0]}',
-                        f'PPP {years[1]}':f'PPPoss {years[1]}',
-                        f'FREQ_PCTL {years[0]}': f'Frequency Percentile {years[0]}', 
-                    f'FREQ_PCTL {years[1]}':f'Frequency Percentile {years[1]}', 
-                        f'PPP_PCTL {years[0]}': f'PPPoss Percentile {years[0]}',
-                        f'PPP_PCTL {years[1]}':f'PPPoss Percentile {years[1]}'}
+                                f'POSS_PCT {years[0]}': f'Frequency {years[0]}', 
+                            f'POSS_PCT {years[1]}':f'Frequency {years[1]}', 
+                                f'PPP {years[0]}': f'PPPoss {years[0]}',
+                                f'PPP {years[1]}':f'PPPoss {years[1]}',
+                                f'PERCENTILE {years[0]}': f'PPPoss Percentile {years[0]}',
+                                f'PERCENTILE {years[1]}':f'PPPoss Percentile {years[1]}'}
         color_cols = [i for i in rename_dict.values()]
-        added_cols = ['Frequency Change','PPPoss Change','Frequency Percentile Change','PPPoss Percentile Change']
+        added_cols = ['Frequency Change','PPPoss Change','PPPoss Percentile Change']
         color_cols = color_cols + added_cols 
         df_pivoted_1 = df_pivoted_1.rename(columns=rename_dict)
         df_pivoted_1 = df_pivoted_1[df_pivoted_1[f'Frequency {years[1]}']>.05]
@@ -266,7 +258,7 @@ def render_tendency_table(player_name):
             if col in color_cols[1:]:
                 styles = discrete_background_color_bins(df_pivoted_1, columns=[col])
                 styles_all = styles_all+styles
-        columns_pct = ['Frequency 2021-22', 'Frequency 2022-23','Frequency Percentile Change',
+        columns_pct = ['Frequency 2022', 'Frequency 2023',
                         'Frequency Change', 'PPPoss Percentile Change', 
                         'PPPoss Change']
         columns = []
@@ -276,28 +268,8 @@ def render_tendency_table(player_name):
             elif col == 'Play Type':
                 rv = {"name": col, "id": col} 
             else:
-                rv = {"name": col, "id": col,'type':'numeric', 'format':dash_table.Format.Format(precision=2, scheme=dash_table.Format.Scheme.decimal_integer)}
+                rv = {"name": col, "id": col,'type':'numeric'}
             columns.append(rv)
-        df_pivoted_2 = df_pivoted_2.rename(columns=rename_dict)
-        df_pivoted_2 = df_pivoted_2[df_pivoted_2[f'Frequency {years[1]}']>.05]
-        df_pivoted_2.drop(f'Frequency {years[1]}',axis = 1, inplace=True)
-        styles_all_2 = []
-        for col in df_pivoted_2.columns.to_list():
-            if col in color_cols[1:]:
-                styles = discrete_background_color_bins(df_pivoted_2, columns=[col])
-                styles_all_2 = styles_all_2+styles
-        columns_pct = ['Frequency 2021-22', 'Frequency 2022-23','Frequency Percentile Change',
-                        'Frequency Change', 'PPPoss Percentile Change', 
-                        'PPPoss Change']
-        columns_2 = []
-        for col in df_pivoted_2.columns.to_list():
-            if col in columns_pct:
-                rv = {"name": col, "id": col,'type':'numeric', 'format':percentage}
-            elif col == 'Play Type':
-                rv = {"name": col, "id": col} 
-            else:
-                rv = {"name": col, "id": col,'type':'numeric', 'format':dash_table.Format.Format(precision=2, scheme=dash_table.Format.Scheme.fixed)}
-            columns_2.append(rv)
         table = dash_table.DataTable(
                 data=df_pivoted_1.to_dict('records'),
                 columns= columns,
@@ -305,41 +277,20 @@ def render_tendency_table(player_name):
                 style_cell_conditional=[
                         {
                             'if': {'column_id': 'Play Type'},
-                            'textAlign': 'left'
+                            'textAlign': 'center'
                         }
                     ],
                 style_header=HEADER_STYLE,
                 style_data=CELL_STYLE)
             
-        table_2 = dash_table.DataTable(
-                data=df_pivoted_2.to_dict('records'),
-                columns= columns_2,
-                #style_data_conditional=styles_all_2,
-                style_cell_conditional=[
-                        {
-                            'if': {'column_id': 'Play Type'},
-                            'textAlign': 'left'
-                        }
-                    ],
-                style_header= HEADER_STYLE,
-                style_data=CELL_STYLE
-            )
         tables = html.Div([
             dbc.Row([
             html.H3('Frequency'),
             table
             ],justify='center'),
-            html.Br(),
-            html.Br(),
-            dbc.Row([
-            html.H3('Points per Posession'),
-            table_2
-            ],justify='center'),
-            html.Br(),
-            html.Footer(['Data thanks to: ',   
-                          html.A('Dominic Samangy', href='https://github.com/DomSamangy/NBA_Play_Types_16_23'),   
-                         ' (data collected from Second Spectrum)'])
-
+            html.Footer(['Source:',   
+                          html.A('NBA Synergy Playtype Data', href='https://www.nba.com/stats/players/transition'),   
+                         ])
         ],style={'text-align':'center'})
     except:
         tables = html.Div([
