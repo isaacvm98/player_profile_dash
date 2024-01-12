@@ -36,9 +36,7 @@ HEADER_STYLE = {'whiteSpace': 'normal',
                     'fontFamily':'Segoe UI'}
 
 CELL_STYLE = {'fontFamily':'Segoe UI',
-              'border': 'bottom',
-            'height': '60px',
-            'width': '80px'}
+              'border': 'bottom'}
 
 df_names = pd.read_csv('./assets/players_teams.csv')
 df = pd.read_csv('./assets/playtypes_new.csv')
@@ -168,8 +166,8 @@ xpps_layout = dbc.Row([
             width={"size": 6, "offset": 6},
         ),
         html.Br(),
-        html.Div(id='table_xpps', 
-                 style={'border': '1px solid lightgray', 'border-radius': '5px', 'padding': '10px'}
+        dbc.Col(id='table_xpps', 
+                 style={'border': '1px solid lightgray'}
         )
     ])],sm=8)
     ])
