@@ -180,8 +180,8 @@ def create_shotchart(data):
     ]
 
     heatmap_made = go.Histogram2d(
-        x=made_shots['loc_x'],
-        y=made_shots['loc_y'],
+        x=made_shots['x'],
+        y=made_shots['y'],
         autobinx=True,
         autobiny=True,
         nbinsx=30,
@@ -195,8 +195,8 @@ def create_shotchart(data):
         showlegend=True,
     )
     heatmap_miss = go.Histogram2d(
-        x=miss_shots['loc_x'],
-        y=miss_shots['loc_y'],
+        x=miss_shots['x'],
+        y=miss_shots['y'],
         autobinx=True,
         autobiny=True,
         nbinsx=30,

@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from dash import Output,Input, html, dcc, dash_table, State
 import dash_bootstrap_components as dbc
 from app import app_dash
@@ -305,22 +306,32 @@ def render_tendency_table(player_name):
 def render_shotchart(player_name):
     df_player = df_names[df_names['PLAYER_NAME']==player_name]
     player_id = df_player['PLAYER_ID'].iloc[0]
-    conn1 = psycopg2.connect(
-      database= DB,
-      user= USER_NAME, 
-      password= PASSWORD, 
-      port = PORT,
-      host = HOST 
-    )
-    cursor = conn1.cursor() 
-    sql1=f'''select * from shots_2023 WHERE player_id = {player_id}'''
-    cursor.execute(sql1)
-    columns = cursor.description
-    conn1.commit()
-    columns = [columns[i][0] for i in range(len(columns))]
-    data = pd.DataFrame(cursor.fetchall(),columns=columns)
-    conn1.close()
-    data['event_type'] = data['event_type'].str.rstrip()
+    # conn1 = psycopg2.connect(
+    #   database= DB,
+    #   user= USER_NAME, 
+    #   password= PASSWORD, 
+    #   port = PORT,
+    #   host = HOST 
+    # )
+    # cursor = conn1.cursor() 
+    # sql1=f'''select * from shots_2023 WHERE player_id = {player_id}'''
+    # cursor.execute(sql1)
+    # columns = cursor.description
+    # conn1.commit()
+    # columns = [columns[i][0] for i in range(len(columns))]
+    # data = pd.DataFrame(cursor.fetchall(),columns=columns)
+    # conn1.close()
+    url = "https://api.pbpstats.com/get-shots/nba"
+    params = {
+        "Season": "2023-24",
+        "SeasonType": "Regular Season",
+        "EntityType": "Player",
+        "EntityId": f"{player_id}",
+    }
+    response = requests.get(url, params=params)
+    response_json = response.json()
+    data = pd.DataFrame(response_json["results"])
+    data['event_type'] = np.where(data['made']==True,'Made Shot','Missed Shot')
     shotchart = create_shotchart(data)
     return shotchart
 
@@ -601,7 +612,7 @@ def get_assist_fig(player_name):
         team_id = df_player['TEAM_ID'].iloc[0]
     url = "https://api.pbpstats.com/get-assist-networks/nba"
     params = {
-        "Season": "2022-23",
+        "Season": "2023-24",
         "SeasonType": "Regular Season",
         "EntityType": "Team", # Options: Team, Lineup
         "EntityId": f'{team_id}'
