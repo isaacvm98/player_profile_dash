@@ -150,7 +150,7 @@ popover_content = [dbc.PopoverHeader("Expected Points per Shot Model"),    dbc.P
 xpps_layout = dbc.Row([
     dbc.Col([
         html.H3('Shotchart',style={'text-align':'center'}),
-        dcc.Graph(id='shotchart_fig',config=config_b)
+        dcc.Loading(dcc.Graph(id='shotchart_fig',config=config_b)),
     ],sm=4),
     dbc.Col([
         dbc.Row([
